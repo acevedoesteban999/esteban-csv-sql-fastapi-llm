@@ -21,7 +21,7 @@
 <body>
   <h1>Pregunta sobre los pedidos</h1>
   <form id="ask-form">
-    <input id="question" placeholder="¿Cuánto vendimos en España en marzo?" required>
+    <input id="question" placeholder="Prueba con: Cuánto vendimos en España en marzo? o Cual cliente ha realizado mas compras?" required>
     <button type="submit">Preguntar</button>
   </form>
 
@@ -46,7 +46,6 @@
 
       const columns = Object.keys(rows[0]);
 
-      // single value -> show it as plain text
       if (rows.length === 1 && columns.length === 1) {
         const value = document.createElement("div");
         value.className = "value";
@@ -55,7 +54,6 @@
         return;
       }
 
-      // several rows -> table
       const table = document.createElement("table");
       const header = table.insertRow();
       columns.forEach((col) => {

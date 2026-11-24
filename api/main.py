@@ -15,7 +15,7 @@ app = FastAPI(title="esteban-csv-sql-fastapi-llm")
 
 
 class AskRequest(BaseModel):
-    question: str = Field(min_length=3, examples=["¿Cuánto vendimos en España en marzo?"])
+    question: str = Field(min_length=3, examples=["Cuánto vendimos en España en marzo?"])
 
 
 class AskResponse(BaseModel):
