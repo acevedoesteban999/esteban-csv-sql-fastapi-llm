@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orders Q&A</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+    form { display: flex; gap: 8px; }
+    input { flex: 1; padding: 10px; font-size: 16px; }
+    button { padding: 10px 16px; font-size: 16px; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    #result { margin: 24px 0; font-size: 18px; }
+    .value { font-size: 32px; font-weight: bold; }
+    .error { color: #b00020; }
+    table { border-collapse: collapse; width: 100%; font-size: 15px; }
+    th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
+    th { background: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <h1>Pregunta sobre los pedidos</h1>
+  <form id="ask-form">
+    <input id="question" placeholder="Prueba con: Cuánto vendimos en España en marzo? o Cual cliente ha realizado mas compras?" required>
+    <button type="submit">Preguntar</button>
+  </form>
+
+  <div id="result">La respuesta aparecerá aquí.</div>
+  <details id="details" hidden>
+    <summary>Ver SQL</summary>
+    <pre id="sql"></pre>
+  </details>
+
+  <script>
+    const form = document.getElementById("ask-form");
+    const result = document.getElementById("result");
+    const details = document.getElementById("details");
+
+    function renderRows(rows) {
+      result.innerHTML = "";
+
+      if (rows.length === 0) {
+        result.textContent = "No se encontraron datos.";
+        return;
+      }
+
+      const columns = Object.keys(rows[0]);
+
+      if (rows.length === 1 && columns.length === 1) {
+        const value = document.createElement("div");
+        value.className = "value";
+        value.textContent = rows[0][columns[0]] ?? "Sin datos";
+        result.appendChild(value);
+        return;
+      }
+
+      const table = document.createElement("table");
+      const header = table.insertRow();
+      columns.forEach((col) => {
+        const th = document.createElement("th");
+        th.textContent = col;
+        header.appendChild(th);
+      });
+      rows.forEach((row) => {
+        const tr = table.insertRow();
+        columns.forEach((col) => {
+          tr.insertCell().textContent = row[col];
+        });
+      });
+      result.appendChild(table);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const question = document.getElementById("question").value;
+      result.className = "";
+      result.textContent = "Pensando...";
+      details.hidden = true;
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          result.className = "error";
+          result.textContent = typeof data.detail === "string" ? data.detail : "Pregunta no válida";
+          return;
+        }
+
+        renderRows(data.rows);
+        document.getElementById("sql").textContent = data.sql;
+        details.hidden = false;
+      } catch (error) {
+        result.className = "error";
+        result.textContent = "Error de conexión: " + error;
+      }
+    });
+  </script>
+</body>
+</html>
