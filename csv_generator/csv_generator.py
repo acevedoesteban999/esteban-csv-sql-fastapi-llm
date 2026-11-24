@@ -1,9 +1,8 @@
 import csv
 import random
 from datetime import date, timedelta
-from pathlib import Path
+from config import CSV_PATH
 
-OUTPUT = Path(__file__).parent / "csv.csv"
 HEADER = ["order_id", "date", "customer", "country", "product", "amount", "status"]
 
 CUSTOMERS = [f"Customer {i:03d}" for i in range(1, 151)]
@@ -38,7 +37,7 @@ def generate_orders(n=1000, seed=42, n_duplicates=30, error_rate=0.05):
     return rows
 
 
-def write_csv(rows, path=OUTPUT):
+def write_csv(rows, path=CSV_PATH):
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(HEADER)
