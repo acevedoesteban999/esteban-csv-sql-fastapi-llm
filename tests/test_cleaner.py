@@ -28,5 +28,4 @@ def test_clean_rows_removes_errors():
 
     assert [r["order_id"] for r in clean] == [1, 4]
     assert clean[1]["status"] == "pending"
-    assert stats == {"input": 5, "duplicates": 1, "invalid_date": 1,
-                     "invalid_amount": 1, "output": 2}
+    assert stats == {"duplicates": 1, "invalid_date": 1, "invalid_amount": 1}

@@ -39,7 +39,7 @@ def upload_to_sqlite(rows, db_path=DB_PATH):
 
 def main(csv_path=CSV_PATH, db_path=DB_PATH):
     raw_rows = read_csv(csv_path)
-    clean, __ = clean_rows(raw_rows)
+    clean, _ = clean_rows(raw_rows)
     upload_to_sqlite(clean, db_path)
     print(f"Uploaded to {db_path}")
 

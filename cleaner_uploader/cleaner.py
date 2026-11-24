@@ -24,10 +24,9 @@ def _parse_amount(value):
 def clean_rows(rows):
     clean = []
     seen_ids = set()
-    stats = {"input": 0, "duplicates": 0, "invalid_date": 0, "invalid_amount": 0}
+    stats = {"duplicates": 0, "invalid_date": 0, "invalid_amount": 0}
 
     for row in rows:
-        stats["input"] += 1
         order_id = int(row["order_id"])
         if order_id in seen_ids:
             stats["duplicates"] += 1
@@ -54,5 +53,4 @@ def clean_rows(rows):
             "status": row["status"].strip().lower(),
         })
 
-    stats["output"] = len(clean)
     return clean, stats
