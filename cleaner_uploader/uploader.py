@@ -2,7 +2,7 @@ import csv
 import sqlite3
 
 from cleaner_uploader.cleaner import clean_rows
-from config import CSV_PATH, DB_PATH
+from config import CSV_PATH, DB_PATH, VIEWS_SQL_PATH
 
 CREATE_ORDERS = """
     CREATE TABLE orders (
@@ -36,11 +36,15 @@ def upload_to_sqlite(rows, db_path=DB_PATH):
         conn.executemany(INSERT_ORDER, rows)
     return db_path
 
+def create_views(db_path=DB_PATH, views_path=VIEWS_SQL_PATH):
+    with sqlite3.connect(db_path) as conn:
+        conn.executescript(views_path.read_text(encoding="utf-8"))
 
 def main(csv_path=CSV_PATH, db_path=DB_PATH):
     raw_rows = read_csv(csv_path)
     clean, _ = clean_rows(raw_rows)
     upload_to_sqlite(clean, db_path)
+    create_views(db_path)
     print(f"Uploaded to {db_path}")
 
 
