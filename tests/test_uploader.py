@@ -1,7 +1,4 @@
 import sqlite3
-
-import pytest
-
 from cleaner_uploader.uploader import main, read_csv
 
 def test_main_uploads_clean_rows(tmp_path):

@@ -1,6 +1,5 @@
 import csv
 from datetime import date
-
 from csv_generator.csv_generator import HEADER, generate_orders, write_csv
 
 
